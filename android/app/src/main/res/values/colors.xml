@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Adaptive launcher icon background: deep walnut brown, matches the
+         Flow Lines workshop art direction. -->
+    <color name="ic_launcher_background">#FF241309</color>
+</resources>
