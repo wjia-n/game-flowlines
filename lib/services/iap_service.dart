@@ -28,6 +28,7 @@ class StoreService {
 
   /// Callbacks the UI wires up.
   final ValueNotifier<String?> lastThanks = ValueNotifier(null);
+  final ValueNotifier<bool> proPurchased = ValueNotifier(true); // everything unlocked
   final ValueNotifier<bool> purchaseInProgress = ValueNotifier(false);
   final ValueNotifier<String?> purchaseError = ValueNotifier(null);
 
