@@ -49,22 +49,7 @@ class _ProScreenState extends State<ProScreen> {
     _store.lastThanks.addListener(_onThanks);
   }
 
-  void _onPro() {
-    if (_store.proPurchased.value && mounted) {
-      widget.settings.setPro(true);
-      widget.audio.win();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('PRO unlocked — enjoy everything!',
-              style: Craft.body(15, theme: _t)),
-          backgroundColor: _t.bgDeep,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-      _store.proPurchased.value = false;
-    }
-  }
-
+  
   void _onThanks() {
     final msg = _store.lastThanks.value;
     if (msg == null || !mounted) return;
@@ -116,16 +101,7 @@ class _ProScreenState extends State<ProScreen> {
                   const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
               child: Column(
                 children: [
-                  _ComparisonCard(theme: t, isPro: s.isPro),
-                  const SizedBox(height: 16),
-                  _BuyCard(
-                    theme: t,
-                    settings: s,
-                    store: _store,
-                    audio: widget.audio,
-                  ),
-                  const SizedBox(height: 16),
-                  _TipsCard(
+                                    _TipsCard(
                     theme: t,
                     store: _store,
                     audio: widget.audio,
@@ -143,105 +119,6 @@ class _ProScreenState extends State<ProScreen> {
 
 // ---------------------------------------------------------------------------
 /// Free vs Pro comparison table — buyers see the big difference.
-class _ComparisonCard extends StatelessWidget {
-  final FlowThemeDef theme;
-  final bool isPro;
-  const _ComparisonCard({required this.theme, required this.isPro});
-
-  @override
-  Widget build(BuildContext context) {
-    const rows = [
-      ('Complete puzzle game', true, true),
-      ('Easy endless tier', true, true),
-      ('Daily challenge', true, true),
-      ('Classic Pack boards', '5', '15'),
-      ('Hints per day', '5', 'Unlimited'),
-      ('Workshop themes', '4', '22+'),
-      ('Pipe styles', '4', '10'),
-      ('Custom theme creator', false, true),
-      ('Medium endless tier', true, true),
-      ('Hard endless tier', false, true),
-      ('Renameable player', true, true),
-      ('Music & sound effects', true, true),
-    ];
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(14),
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            theme.bgMid.withValues(alpha: 0.9),
-            theme.bgDeep.withValues(alpha: 0.9),
-          ],
-        ),
-        border: Border.all(color: theme.accent, width: 2),
-      ),
-      child: Column(
-        children: [
-          Text('Free vs PRO', style: Craft.display(20, theme: theme)),
-          const SizedBox(height: 4),
-          Text(
-            'One purchase. Yours forever.',
-            style: Craft.body(13,
-                theme: theme,
-                color: theme.text.withValues(alpha: 0.7)),
-          ),
-          const SizedBox(height: 12),
-          // Header row.
-          Row(
-            children: [
-              const Expanded(flex: 5, child: SizedBox()),
-              Expanded(
-                  flex: 2,
-                  child: Text('FREE',
-                      style: Craft.label(12, theme: theme),
-                      textAlign: TextAlign.center)),
-              Expanded(
-                  flex: 2,
-                  child: Text('PRO',
-                      style: Craft.label(12, theme: theme),
-                      textAlign: TextAlign.center)),
-            ],
-          ),
-          const Divider(height: 14),
-          for (final r in rows)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5),
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 5,
-                    child: Text(r.$1, style: Craft.body(13, theme: theme)),
-                  ),
-                  Expanded(flex: 2, child: _Cell(value: r.$2, theme: theme)),
-                  Expanded(flex: 2, child: _Cell(value: r.$3, theme: theme)),
-                ],
-              ),
-            ),
-          if (isPro)
-            Padding(
-              padding: const EdgeInsets.only(top: 12),
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(18),
-                  color: theme.accent.withValues(alpha: 0.25),
-                  border: Border.all(color: theme.accentLight),
-                ),
-                child: Text('✦ PRO ACTIVE ✦',
-                    style: Craft.label(14, theme: theme)),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
 class _Cell extends StatelessWidget {
   final Object value; // bool | String
   final FlowThemeDef theme;
@@ -270,104 +147,6 @@ class _Cell extends StatelessWidget {
 }
 
 // ---------------------------------------------------------------------------
-class _BuyCard extends StatelessWidget {
-  final FlowThemeDef theme;
-  final FlowSettings settings;
-  final StoreService store;
-  final FlowAudio audio;
-  const _BuyCard({
-    required this.theme,
-    required this.settings,
-    required this.store,
-    required this.audio,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final pro = store.proProduct;
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(14),
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            theme.bgMid.withValues(alpha: 0.9),
-            theme.bgDeep.withValues(alpha: 0.9),
-          ],
-        ),
-        border: Border.all(color: theme.accent, width: 2),
-      ),
-      child: Column(
-        children: [
-          Text('Unlock PRO', style: Craft.display(20, theme: theme)),
-          const SizedBox(height: 8),
-          if (settings.isPro)
-            Text('You already own PRO — thank you!',
-                style: Craft.body(14, theme: theme),
-                textAlign: TextAlign.center)
-          else if (!store.storeReady)
-            Text(
-              store.error ?? 'Available after store setup.',
-              style: Craft.body(14,
-                  theme: theme,
-                  color: theme.text.withValues(alpha: 0.7)),
-              textAlign: TextAlign.center,
-            )
-          else if (pro != null) ...[
-            Text(pro.description.isNotEmpty
-                ? pro.description
-                : 'Unlock everything in Flow Lines, forever.',
-                style: Craft.body(14, theme: theme),
-                textAlign: TextAlign.center),
-            const SizedBox(height: 12),
-            ValueListenableBuilder<bool>(
-              valueListenable: store.purchaseInProgress,
-              builder: (_, busy, _) => CraftButton(
-                label: busy ? 'Working…' : 'Get PRO — ${pro.price}',
-                width: 260,
-                theme: theme,
-                onTap: busy
-                    ? () {}
-                    : () {
-                        audio.click();
-                        store.buyPro();
-                      },
-              ),
-            ),
-          ],
-          ValueListenableBuilder<String?>(
-            valueListenable: store.purchaseError,
-            builder: (_, err, _) => err == null
-                ? const SizedBox.shrink()
-                : Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: Text(err,
-                        style: Craft.body(13,
-                            theme: theme,
-                            color: const Color(0xFFE08A8A)),
-                        textAlign: TextAlign.center),
-                  ),
-          ),
-          const SizedBox(height: 10),
-          TextButton(
-            onPressed: () {
-              audio.click();
-              store.restore();
-            },
-            child: Text('Restore purchases',
-                style: Craft.label(13, theme: theme)),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ---------------------------------------------------------------------------
-/// Consumable tips — pure support, with real store prices.
 class _TipsCard extends StatelessWidget {
   final FlowThemeDef theme;
   final StoreService store;

@@ -63,7 +63,7 @@ class FlowSettings extends ChangeNotifier {
   List<String> playerNames = List.of(defaultNames);
   String themeId = 'walnut';
   int pipeStyle = 0;
-  bool isPro = false;
+  bool isPro = true; // everything unlocked — no Pro version
 
   /// Classic pack: how many levels are unlocked (sequential).
   int classicUnlocked = 1;
@@ -160,7 +160,7 @@ class FlowSettings extends ChangeNotifier {
     }
     themeId = p.getString(_kTheme) ?? 'walnut';
     pipeStyle = (p.getInt(_kPipeStyle) ?? 0).clamp(0, PipeStyles.names.length - 1);
-    isPro = p.getBool(_kIsPro) ?? false;
+    isPro = true; // everything unlocked
     classicUnlocked = (p.getInt(_kClassic) ?? 1).clamp(1, classicLevels.length);
     try {
       final t = jsonDecode(p.getString(_kTiersJson) ?? '{}');
