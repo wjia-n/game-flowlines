@@ -17,6 +17,9 @@ import 'package:audioplayers/audioplayers.dart';
 ///   resumes exactly where it left off instead of restarting or dying.
 /// - Every public method catches player errors; audio can never crash the app.
 class FlowAudio {
+  /// Per-game pitch character (flowlines): 0.81x. Makes SFX unique.
+  static const double _pitchMul = 0.810;
+
   static const int _rate = 22050;
   final AudioPlayer _sfx = AudioPlayer();
   final AudioPlayer _music = AudioPlayer();
@@ -103,6 +106,8 @@ class FlowAudio {
 
   List<double> _tone(double freq, double secs,
       {double freqEnd = 0, double attack = 0.02, double harmonics = 0.25}) {
+    freq *= _pitchMul;
+    freqEnd *= _pitchMul;
     final n = (_rate * secs).round();
     final out = List<double>.filled(n, 0);
     for (int i = 0; i < n; i++) {
@@ -174,12 +179,33 @@ class FlowAudio {
       _cache.putIfAbsent(key, () => _wav(build()));
 
   Uint8List _menuBytes() => _clip('music_menu', () {
-        // Warm workshop waltz: Am – F – C – G pads, 16s loop.
+        // D# bass + melody 0 – 2 – 5 – 4, 16s loop. Unique to flowlines.
+        final bassNotes = [77.78, 98.00, 130.81, 116.54];
+        final melNotes = [466.16, 587.34, 784.00, 698.46];
+        final out = List<double>.filled((_rate * 16).round(), 0);
+        final segLen = (_rate * 4).round();
+        for (int s = 0; s < 4; s++) {
+          final bass = _tone(bassNotes[s], 3.5, harmonics: 0.4);
+          final mel = _tone(melNotes[s], 1.2, harmonics: 0.25);
+          for (int i = 0; i < bass.length && s * segLen + i < out.length; i++) {
+            out[s * segLen + i] += bass[i] * 0.5;
+          }
+          final melStart = s * segLen + segLen ~/ 4;
+          for (int i = 0; i < mel.length && melStart + i < out.length; i++) {
+            out[melStart + i] += mel[i] * 0.35;
+          }
+        }
+        return out;
+      });
+
+
+  Uint8List _gameBytes() => _clip('music_game', () {
+        // D# 0 – 2 – 5 – 4 warm pad, 16s loop. Unique to flowlines.
         final seq = [
-          [220.0, 261.63, 329.63], // Am
-          [174.61, 220.0, 261.63], // F
-          [261.63, 329.63, 392.0], // C
-          [196.0, 246.94, 293.66], // G
+          [155.56, 196.00, 233.08],
+          [196.00, 233.08, 293.67],
+          [261.63, 311.13, 392.00],
+          [233.08, 293.67, 349.23]
         ];
         final out = <double>[];
         for (final chord in seq) {
@@ -188,30 +214,6 @@ class FlowAudio {
         return out;
       });
 
-  Uint8List _gameBytes() => _clip('music_game', () {
-        // Gentle kalimba-like plucks over a soft drone, 12s loop.
-        final drone = _padChord([146.83, 220.0], 12.0);
-        final plucks = [
-          523.25,
-          587.33,
-          659.25,
-          783.99,
-          659.25,
-          587.33,
-          523.25,
-          440.0
-        ];
-        final n = (_rate * 12).round();
-        final out = List<double>.from(drone);
-        for (int k = 0; k < plucks.length; k++) {
-          final start = (n * k / plucks.length).round();
-          final tone = _tone(plucks[k], 0.55, harmonics: 0.3);
-          for (int i = 0; i < tone.length && start + i < n; i++) {
-            out[start + i] += tone[i] * 0.32;
-          }
-        }
-        return out;
-      });
 
   // ------------------------------------------------------------------ SFX
   Future<void> _play(Uint8List bytes) async {

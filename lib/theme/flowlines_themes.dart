@@ -349,7 +349,7 @@ class FlowThemes {
     ),
     FlowThemeDef(
       id: 'alpine',
-      name: 'Alpine Pine',
+      name: 'Summit Pine',
       bgDeep: Color(0xFF10201F),
       bgMid: Color(0xFF1E3A38),
       boardDark: Color(0xFF264744),
