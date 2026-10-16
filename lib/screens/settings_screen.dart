@@ -3,6 +3,7 @@ import '../services/audio_service.dart';
 import '../services/settings_service.dart';
 import '../theme/craft.dart';
 import '../theme/flowlines_themes.dart';
+import '../transfer/transfer_ui.dart';
 
 /// Settings: audio, player name, progress reset.
 class SettingsScreen extends StatefulWidget {
@@ -131,6 +132,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+              TransferSaveTile(gameSlug: 'flowlines'),
                   Text('Sound', style: Craft.display(20, theme: t)),
                   const SizedBox(height: 6),
                   CraftRow(
