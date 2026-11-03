@@ -341,7 +341,8 @@ class _MenuScreenState extends State<MenuScreen> {
                     children: [
                       Text('Workshop themes', style: Craft.display(20, theme: t)),
                       const Spacer(),
-                      if (_s.isPro)
+                      if (defaultTargetPlatform != TargetPlatform.iOS &&
+                          _s.isPro)
                         Text('✦ PRO', style: Craft.label(13, theme: t)),
                     ],
                   ),

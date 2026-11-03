@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:share_plus/share_plus.dart';
@@ -203,7 +204,9 @@ class _GameScreenState extends State<GameScreen>
       widget.audio.invalid();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('No hints left today — PRO gets unlimited hints!',
+          content: Text(defaultTargetPlatform == TargetPlatform.iOS
+              ? 'No hints left today — come back tomorrow for more!'
+              : 'No hints left today — PRO gets unlimited hints!',
               style: Craft.body(14, theme: _t)),
           backgroundColor: _t.bgDeep,
           behavior: SnackBarBehavior.floating,

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../services/audio_service.dart';
 import '../services/settings_service.dart';
@@ -53,7 +54,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   textAlign: TextAlign.center),
               const SizedBox(height: 10),
               Text(
-                'This clears unlocked levels, streaks and stats. Your name, themes and PRO stay.',
+                defaultTargetPlatform == TargetPlatform.iOS
+                    ? 'This clears unlocked levels, streaks and stats. Your name and themes stay.'
+                    : 'This clears unlocked levels, streaks and stats. Your name, themes and PRO stay.',
                 style: Craft.body(14, theme: t),
                 textAlign: TextAlign.center,
               ),
