@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:share_plus/share_plus.dart';
@@ -477,7 +476,7 @@ class _MenuScreenState extends State<MenuScreen> {
                     alignment: WrapAlignment.center,
                     children: [
                       _MiniBtn(
-                          label: _s.isPro ? '✦ PRO' : 'Get PRO',
+                          label: defaultTargetPlatform == TargetPlatform.iOS ? '⭐ Gold Star' : (_s.isPro ? '✦ PRO' : 'Get PRO'),
                           theme: t,
                           onTap: _openPro),
                       _MiniBtn(

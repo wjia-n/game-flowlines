@@ -79,7 +79,7 @@ class _ProScreenState extends State<ProScreen> {
         appBar: AppBar(title: const Text('Gold Star'), centerTitle: true),
         body: SafeArea(
           child: ValueListenableBuilder<bool>(
-            valueListenable: widget.store.starOwned,
+            valueListenable: _store.starOwned,
             builder: (_, owned, child) => Center(
               child: Padding(
                 padding: const EdgeInsets.all(24),
@@ -96,15 +96,15 @@ class _ProScreenState extends State<ProScreen> {
                     const SizedBox(height: 20),
                     if (owned)
                       const Text('\u2b50 Gold Star badge', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold))
-                    else if (widget.store.starProduct != null)
+                    else if (_store.starProduct != null)
                       ElevatedButton(
-                        onPressed: () => widget.store.buyStar(widget.store.starProduct!),
-                        child: Text('\u2b50 Gold Star — ${widget.store.starProduct!.price}'),
+                        onPressed: () => _store.buyStar(_store.starProduct!),
+                        child: Text('\u2b50 Gold Star — ${_store.starProduct!.price}'),
                       )
                     else
-                      Text(widget.store.error ?? 'Loading…'),
+                      Text(_store.error ?? 'Loading…'),
                     const SizedBox(height: 12),
-                    TextButton(onPressed: () => widget.store.restore(), child: const Text('Restore purchase')),
+                    TextButton(onPressed: () => _store.restore(), child: const Text('Restore purchase')),
                   ],
                 ),
               ),
